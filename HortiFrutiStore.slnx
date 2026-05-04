@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.MD" />
+  </Folder>
+  <Project Path="src/HortiFrutiStore.Api/HortiFrutiStore.Api.csproj" />
+  <Project Path="src/HortiFrutiStore.Application/HortiFrutiStore.Application.csproj" />
+  <Project Path="src/HortiFrutiStore.Domain/HortiFrutiStore.Domain.csproj" />
+  <Project Path="src/HortiFrutiStore.Infrastructure/HortiFrutiStore.Infrastructure.csproj" />
+</Solution>
