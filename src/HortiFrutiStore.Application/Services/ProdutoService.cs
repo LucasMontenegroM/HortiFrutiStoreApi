@@ -3,8 +3,6 @@ using HortiFrutiStore.Application.Services.Interfaces;
 using HortiFrutiStore.Domain.Entities;
 using HortiFrutiStore.Domain.Exceptions;
 using HortiFrutiStore.Domain.Interfaces;
-using System.IO.MemoryMappedFiles;
-using System.Runtime.CompilerServices;
 
 namespace HortiFrutiStore.Application.Services;
 
@@ -25,6 +23,9 @@ public class ProdutoService : IProdutoService, IUnitOfWork
 
         produtoEntity.AtualizarNome(novoNome);
 
+        _produtoRepository.Atualizar(produtoEntity);
+
+        await _unitOfWork.CommitAsync(ct);
     }
 
     public async Task AlterarPreco(Guid id, decimal novoPreco, CancellationToken ct)
@@ -41,6 +42,10 @@ public class ProdutoService : IProdutoService, IUnitOfWork
             ?? throw new NotFoundException("Houve um problema ao buscar o produto.");
 
         entidade.Preco.AtualizarDesconto(novoDesconto);
+
+        _produtoRepository.Atualizar(entidade);
+
+        await _unitOfWork.CommitAsync(ct);
     }
 
     public async Task<ProdutoDto> BuscarPorId(Guid id, CancellationToken ct)
@@ -50,9 +55,7 @@ public class ProdutoService : IProdutoService, IUnitOfWork
             Produto? entidade = await _produtoRepository.BuscarPorId(id)
                 ?? throw new NotFoundException("Id do produto não foi encontrado");
 
-            var dto = new ProdutoDto();
-
-            ProdutoDto.Map(entidade);
+            var dto = ProdutoDto.Map(entidade);
 
             return dto;
         }
@@ -77,18 +80,24 @@ public class ProdutoService : IProdutoService, IUnitOfWork
 
     public async Task<ProdutoDto> Criar(ProdutoDto produto, CancellationToken ct)
     {
-            var novoProdutoEntity = Produto.Criar(produto.Nome, produto.PrecoFinal);
+        var novoProdutoEntity = Produto.Criar(produto.Nome, produto.PrecoBase, produto.Desconto);
 
-            var produtoDtoRetorno = ProdutoDto.Map(novoProdutoEntity);
+        var produtoDtoRetorno = ProdutoDto.Map(novoProdutoEntity);
 
-            await _unitOfWork.CommitAsync(ct);
+        _produtoRepository.Adicionar(novoProdutoEntity);
 
-            return produtoDtoRetorno;
+        await _unitOfWork.CommitAsync(ct);
+
+        return produtoDtoRetorno;
     }
 
-    public async Task Remover(Produto produto, CancellationToken ct)
+    public async Task Remover(Guid id, CancellationToken ct)
     {
-        _produtoRepository.Remover(produto);
+        var produtoEntity = await _produtoRepository.BuscarPorId(id)
+            ?? throw new NotFoundException("Id do produto não foi encontrado");
+
+            _produtoRepository.Remover(produtoEntity);
+
         await _unitOfWork.CommitAsync(ct);
     }
 }

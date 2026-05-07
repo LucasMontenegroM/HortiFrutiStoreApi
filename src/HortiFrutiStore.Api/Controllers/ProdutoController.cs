@@ -36,17 +36,17 @@ namespace HortiFrutiStore.Api.Controllers
             return Created();
         }
 
-        [HttpPatch]
+        [HttpPatch("/nome/{Id:guid}")]
 
-        public async Task<IActionResult> AlterarNomeProduto(Guid id, string novoNome, CancellationToken ct)
+        public async Task<IActionResult> AlterarNomeProduto([FromRoute]Guid id, string novoNome, CancellationToken ct)
         {
             await _produtoServices.AlterarNome(id, novoNome, ct);
 
             return NoContent();
         }
-        [HttpPatch]
+        [HttpPatch("/preco/{Id:guid}")]
 
-        public async Task<IActionResult> AlterarPrecoProduto(Guid id, decimal novoPreco, CancellationToken ct)
+        public async Task<IActionResult> AlterarPrecoProduto([FromRoute]Guid id, decimal novoPreco, CancellationToken ct)
         {
             await _produtoServices.AlterarPreco(id, novoPreco, ct);
 

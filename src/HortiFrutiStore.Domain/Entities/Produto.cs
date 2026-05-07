@@ -24,13 +24,13 @@ public class Produto : Entity
             throw new DomainException("O preço pós desconto deve ser um valor positivo maior que zero.");
         if (Preco.ValorBase <= 0)
             throw new DomainException("O Preço base de um produto deve ser maior que 0");
-        if (Preco.Desconto >= 0 || Preco.Desconto <= 1)
-            throw new DomainException("O desconto deve ser um número entre 0 e 1");
+        if (Preco.Desconto <= 0 || Preco.Desconto >= 1)
+            throw new DomainException("Caso preenchido, o desconto deve ser um número entre 0 e 1");
     }
 
-    public static Produto Criar(string nome, decimal precoInicial)
+    public static Produto Criar(string nome, decimal precoInicial, decimal? desconto)
     {
-       var preco = new Preco(precoInicial);
+       var preco = new Preco(precoInicial, desconto);
        return new Produto(nome, preco);
     }
         
