@@ -1,5 +1,6 @@
 ﻿using HortiFrutiStore.Application.DTOs;
 using HortiFrutiStore.Application.Services.Interfaces;
+using HortiFrutiStore.Domain.Abstracoes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HortiFrutiStore.Api.Controllers
@@ -22,14 +23,15 @@ namespace HortiFrutiStore.Api.Controllers
             return Ok(dto);
         }
 
-        [HttpGet]
+        [HttpGet("/BuscarTodos")]
         public async Task<IActionResult> BuscarTodos(CancellationToken ct)
         {
             var retorno = await _produtoServices.BuscarTodos(ct);
             return Ok(retorno);
         }
 
-        [HttpPost]
+        [HttpPost("/Criar")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Criar([FromBody] ProdutoDto dto, CancellationToken ct)
         {
             var dtoRetorno = await _produtoServices.Criar(dto, ct);

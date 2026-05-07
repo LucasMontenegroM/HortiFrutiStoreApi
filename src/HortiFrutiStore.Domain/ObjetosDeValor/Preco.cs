@@ -2,7 +2,7 @@
 
 public class Preco
 {
-    public decimal ValorFinal { get; protected set; }
+    public decimal ValorFinal => CalculaValorDesconto(ValorBase, Desconto);
     public decimal ValorBase { get; protected set; }
     public decimal? Desconto { get; protected set; }
 
@@ -12,7 +12,6 @@ public class Preco
     {
         ValorBase = valorBase;
         Desconto = desconto;
-        ValorFinal = CalculaValorDesconto(valorBase, desconto);
     }
 
     public decimal CalculaValorDesconto(decimal valorBase, decimal? desconto)
@@ -21,8 +20,8 @@ public class Preco
         return valorBase - valorDesconto;       
     }
 
-    public void AtualizarPreco(decimal novoValorBase)
-        => ValorFinal = CalculaValorDesconto(novoValorBase, Desconto);
+    public void AtualizarValorBase(decimal novoValorBase)
+        => ValorBase = novoValorBase;
 
     public void AtualizarDesconto(decimal novoDesconto)
         => Desconto = novoDesconto;

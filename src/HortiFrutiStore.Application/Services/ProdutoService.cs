@@ -33,7 +33,9 @@ public class ProdutoService : IProdutoService, IUnitOfWork
         var entidade = await _produtoRepository.BuscarPorId(id, ct) 
             ?? throw new NotFoundException("Houve um problema ao buscar o produto.");
 
-        entidade.Preco.AtualizarPreco(novoPreco);
+        entidade.Preco.AtualizarValorBase(novoPreco);
+
+        await _unitOfWork.CommitAsync(ct);
     }
 
     public async Task AplicarDesconto(Guid id, decimal novoDesconto, CancellationToken ct)
@@ -43,7 +45,7 @@ public class ProdutoService : IProdutoService, IUnitOfWork
 
         entidade.Preco.AtualizarDesconto(novoDesconto);
 
-        _produtoRepository.Atualizar(entidade);
+        //_produtoRepository.Atualizar(entidade);
 
         await _unitOfWork.CommitAsync(ct);
     }

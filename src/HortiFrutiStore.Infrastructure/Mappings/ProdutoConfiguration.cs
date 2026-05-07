@@ -13,9 +13,9 @@ public class ProdutoConfiguration : IEntityTypeConfiguration<Produto>
 
         builder.OwnsOne(p => p.Preco, preco =>
         {
-            preco.Property(p => p.ValorBase).HasColumnName("ValorBase");
+            preco.Property(p => p.ValorFinal).HasColumnName("ValorBase");
             preco.Property(p => p.Desconto).HasColumnName("Desconto");
-            preco.Ignore(p => p.ValorFinal);
+            preco.Ignore(p => p.ValorBase);
         });
     }
 }
