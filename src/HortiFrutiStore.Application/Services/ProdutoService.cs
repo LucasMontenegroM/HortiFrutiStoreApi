@@ -1,7 +1,9 @@
 ﻿using HortiFrutiStore.Application.DTOs;
 using HortiFrutiStore.Application.Services.Interfaces;
 using HortiFrutiStore.Domain.Entities;
+using HortiFrutiStore.Domain.Exceptions;
 using HortiFrutiStore.Domain.Interfaces;
+using System.IO.MemoryMappedFiles;
 using System.Runtime.CompilerServices;
 
 namespace HortiFrutiStore.Application.Services;
@@ -15,36 +17,78 @@ public class ProdutoService : IProdutoService, IUnitOfWork
         _produtoRepository = produtoRepository;
         _unitOfWork = unitOfWork;
     }
+
+    public async Task AlterarNome(Guid id, string novoNome, CancellationToken ct)
+    {
+        var produtoEntity = await _produtoRepository.BuscarPorId(id, ct)
+            ?? throw new NotFoundException("Houve um problema ao buscar o produto.");
+
+        produtoEntity.AtualizarNome(novoNome);
+
+    }
+
+    public async Task AlterarPreco(Guid id, decimal novoPreco, CancellationToken ct)
+    {
+        var entidade = await _produtoRepository.BuscarPorId(id, ct) 
+            ?? throw new NotFoundException("Houve um problema ao buscar o produto.");
+
+        entidade.Preco.AtualizarPreco(novoPreco);
+    }
+
+    public async Task AplicarDesconto(Guid id, decimal novoDesconto, CancellationToken ct)
+    {
+        var entidade = await _produtoRepository.BuscarPorId(id, ct)
+            ?? throw new NotFoundException("Houve um problema ao buscar o produto.");
+
+        entidade.Preco.AtualizarDesconto(novoDesconto);
+    }
+
     public async Task<ProdutoDto> BuscarPorId(Guid id, CancellationToken ct)
     {
-        Produto? entidade = await _produtoRepository.BuscarPorId(id);
-        var dto = new ProdutoDto();
-
-        if(entidade != null)
+        try
         {
-            dto.Map(dto, entidade);
+            Produto? entidade = await _produtoRepository.BuscarPorId(id)
+                ?? throw new NotFoundException("Id do produto não foi encontrado");
+
+            var dto = new ProdutoDto();
+
+            ProdutoDto.Map(entidade);
+
+            return dto;
         }
 
-        return dto;
+        catch (Exception ex)
+        {
+            throw new Exception("Ocorreu um erro ao realizar a busca: " + ex.Message);
+        }
     }
 
-    public Task<List<ProdutoDto>> BuscarTodos(CancellationToken ct)
+    public async Task<List<ProdutoDto>> BuscarTodos(CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var produtosEntity = await _produtoRepository.BuscarTodos()
+            ?? throw new NotFoundException("Id do produto não foi encontrado");
+        var listaDto = produtosEntity.Select(ProdutoDto.Map).ToList();
+
+        return listaDto;
     }
 
-    public Task CommitAsync()
+    public Task CommitAsync(CancellationToken ct)
+        => _unitOfWork.CommitAsync(ct);
+
+    public async Task<ProdutoDto> Criar(ProdutoDto produto, CancellationToken ct)
     {
-        throw new NotImplementedException();
+            var novoProdutoEntity = Produto.Criar(produto.Nome, produto.PrecoFinal);
+
+            var produtoDtoRetorno = ProdutoDto.Map(novoProdutoEntity);
+
+            await _unitOfWork.CommitAsync(ct);
+
+            return produtoDtoRetorno;
     }
 
-    public void Criar(ProdutoDto produto)
+    public async Task Remover(Produto produto, CancellationToken ct)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task Remover(Guid id, CancellationToken ct)
-    {
-        throw new NotImplementedException();
+        _produtoRepository.Remover(produto);
+        await _unitOfWork.CommitAsync(ct);
     }
 }

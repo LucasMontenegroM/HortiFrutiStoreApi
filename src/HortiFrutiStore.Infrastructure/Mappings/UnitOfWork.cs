@@ -5,8 +5,8 @@ namespace HortiFrutiStore.Infrastructure.Mappings;
 
 public class UnitOfWork(StoreContext context) : IUnitOfWork
 {
-    public async Task CommitAsync()
+    public async Task CommitAsync(CancellationToken ct)
     {
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(ct);
     }
 }

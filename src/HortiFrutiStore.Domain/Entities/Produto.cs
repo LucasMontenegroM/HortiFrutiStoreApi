@@ -11,9 +11,9 @@ public class Produto : Entity
     protected Produto() { }
     private Produto(string nome, Preco preco) 
     {
-        Validar();
         Nome = nome;
         Preco = preco;
+        Validar();
     }
 
     private void Validar()
@@ -21,11 +21,16 @@ public class Produto : Entity
         if (string.IsNullOrEmpty(Nome))
             throw new DomainException("O Nome não pode ser um valor vazio.");
         if (Preco.ValorFinal <= 0)
-            throw new DomainException("O preço deve ser um valor positivo.");
+            throw new DomainException("O preço pós desconto deve ser um valor positivo maior que zero.");
+        if (Preco.ValorBase <= 0)
+            throw new DomainException("O Preço base de um produto deve ser maior que 0");
+        if (Preco.Desconto >= 0 || Preco.Desconto <= 1)
+            throw new DomainException("O desconto deve ser um número entre 0 e 1");
     }
 
-    public Produto Criar(string nome, Preco preco)
+    public static Produto Criar(string nome, decimal precoInicial)
     {
+       var preco = new Preco(precoInicial);
        return new Produto(nome, preco);
     }
         

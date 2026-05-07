@@ -15,12 +15,9 @@ public class Preco
         ValorFinal = CalculaValorDesconto(valorBase, desconto);
     }
 
-    private decimal CalculaValorDesconto(decimal valorBase, decimal? desconto)
+    protected static decimal CalculaValorDesconto(decimal valorBase, decimal? desconto)
     {
-        if (desconto == null)
-            return valorBase;
-        var valorDescontado = valorBase / (decimal)desconto;
-        return valorBase - valorDescontado;
+         return valorBase * (desconto ?? 1);       
     }
 
     public void AtualizarPreco(decimal novoValorBase)

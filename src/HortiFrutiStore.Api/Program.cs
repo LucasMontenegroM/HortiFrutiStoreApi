@@ -1,3 +1,4 @@
+using HortiFrutiStore.Api.Exceptions;
 using HortiFrutiStore.Application.Services;
 using HortiFrutiStore.Application.Services.Interfaces;
 using HortiFrutiStore.Domain.Interfaces;
@@ -12,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -26,6 +26,9 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddTransient<IProdutoService, ProdutoService>();
 builder.Services.AdicionarInfrastrutura();
 
+builder.Services.AddExceptionHandler<ExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 builder.Services.AddDbContext<StoreContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -37,17 +40,13 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
-app.UseExceptionHandler("/error");
-
+app.UseExceptionHandler();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

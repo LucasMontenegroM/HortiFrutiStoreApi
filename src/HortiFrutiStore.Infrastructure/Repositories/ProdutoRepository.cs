@@ -17,4 +17,9 @@ public class ProdutoRepository : IProdutoRepository
 
     public async Task<List<Produto>> BuscarTodos(CancellationToken ct = default)
         => await _db.Produtos.AsNoTracking().ToListAsync(ct);
+
+    public void Remover(Produto produtoEntity)
+    {
+        _db.Produtos.Remove(produtoEntity);
+    }
 }
