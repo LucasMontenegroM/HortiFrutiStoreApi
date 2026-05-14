@@ -24,9 +24,9 @@ namespace HortiFrutiStore.Api.Controllers
         }
 
         [HttpGet("buscartodos")]
-        public async Task<IActionResult> BuscarTodos(CancellationToken ct)
+        public async Task<IActionResult> BuscarTodos(int numPagina = 0, int numExibidos = 25, CancellationToken ct = default)
         {
-            var retorno = await _produtoServices.BuscarTodos(ct);
+            var retorno = await _produtoServices.BuscarTodos(numPagina, numExibidos, ct);
             return Ok(retorno);
         }
 

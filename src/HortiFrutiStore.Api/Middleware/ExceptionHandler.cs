@@ -5,19 +5,11 @@ namespace HortiFrutiStore.Api.Exceptions;
 
 internal sealed class ExceptionHandler : IExceptionHandler
 {
-    private readonly ILogger<ExceptionHandler> _logger;
-
-    public ExceptionHandler(ILogger<ExceptionHandler> logger)
-    {
-        _logger = logger;
-    }
-
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
-        _logger.LogError(exception, "Exceção não tratada ocorreu.");
 
         httpContext.Response.StatusCode = exception switch
         {
@@ -31,7 +23,7 @@ internal sealed class ExceptionHandler : IExceptionHandler
         {
             status = httpContext.Response.StatusCode,
             message = exception.Message
-        }, cancellationToken);
+        }, ct);
 
         return true;
     }

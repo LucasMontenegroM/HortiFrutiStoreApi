@@ -23,8 +23,8 @@ public class ProdutoRepository : IProdutoRepository
     public async Task<Produto?> BuscarPor(Expression<Func<Produto, bool>> expression, CancellationToken ct = default)
         => await _db.Produtos.FirstOrDefaultAsync(expression, ct);
 
-    public async Task<List<Produto>> BuscarTodos(CancellationToken ct = default)
-        => await _db.Produtos.AsNoTracking().ToListAsync(ct);
+    public async Task<List<Produto>> BuscarTodos(int numPaginas, int numExibidos, CancellationToken ct = default)
+        => await _db.Produtos.AsNoTracking().Skip(numPaginas * numExibidos).Take(numExibidos).ToListAsync(ct);
 
     public void Remover(Produto produtoEntity)
         => _db.Produtos.Remove(produtoEntity);

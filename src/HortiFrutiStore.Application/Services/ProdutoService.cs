@@ -29,7 +29,7 @@ public class ProdutoService : IProdutoService
         var resultado = _validator.Validate(produtoEntity);
 
         if (!resultado.IsValid)
-            throw new AppException(resultado.Errors.Select(e => e.ErrorMessage));
+            throw new DomainException(resultado.Errors.Select(e => e.ErrorMessage));
 
         _produtoRepository.Atualizar(produtoEntity);
 
@@ -39,14 +39,14 @@ public class ProdutoService : IProdutoService
     public async Task AlterarPreco(Guid id, decimal novoPreco, CancellationToken ct)
     {
         var entidade = await _produtoRepository.BuscarPor(p => p.Id == id, ct)
-            ?? throw new NotFoundException("Produto não encontrado.");
+            ?? throw new DomainException("Produto não encontrado.");
 
         entidade.Preco.AtualizarValorBase(novoPreco);
 
         var resultado = _validator.Validate(entidade);
 
         if (!resultado.IsValid)
-            throw new AppException(resultado.Errors.Select(e => e.ErrorMessage));
+            throw new DomainException(resultado.Errors.Select(e => e.ErrorMessage));
 
         await _unitOfWork.CommitAsync(ct);
     }
@@ -71,9 +71,9 @@ public class ProdutoService : IProdutoService
         return (ProdutoDto)entidade;
     }
 
-    public async Task<List<ProdutoDto>> BuscarTodos(CancellationToken ct)
+    public async Task<List<ProdutoDto>> BuscarTodos(int numPagina, int numExibidos, CancellationToken ct)
     {
-        var produtosEntity = await _produtoRepository.BuscarTodos()
+        var produtosEntity = await _produtoRepository.BuscarTodos(numPagina, numExibidos, ct)
             ?? throw new NotFoundException("Nenhum produto encontrado.");
 
         return produtosEntity.Select(p => (ProdutoDto)p).ToList();  
