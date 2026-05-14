@@ -8,7 +8,7 @@ public class ProdutoDto
     public decimal PrecoBase { get; set; }
     public decimal? Desconto { get; set; }
 
-    public static ProdutoDto Map(Produto entidade)
+    public static implicit operator ProdutoDto (Produto entidade)
         => new ProdutoDto
         {
             Nome = entidade.Nome,

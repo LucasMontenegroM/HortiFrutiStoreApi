@@ -1,4 +1,6 @@
-﻿namespace HortiFrutiStore.Domain.Abstracoes;
+﻿using FluentValidation;
+
+namespace HortiFrutiStore.Domain.Abstracoes;
 
 public class Entity
 {

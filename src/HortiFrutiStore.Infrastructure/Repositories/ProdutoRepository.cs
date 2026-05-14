@@ -2,6 +2,7 @@
 using HortiFrutiStore.Domain.Interfaces;
 using HortiFrutiStore.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace HortiFrutiStore.Infrastructure.Repositories;
 
@@ -18,6 +19,9 @@ public class ProdutoRepository : IProdutoRepository
 
     public void Atualizar(Produto produtoEntity)
     => _db.Produtos.Update(produtoEntity);
+
+    public async Task<Produto?> BuscarPor(Expression<Func<Produto, bool>> expression, CancellationToken ct = default)
+        => await _db.Produtos.FirstOrDefaultAsync(expression, ct);
 
     public async Task<Produto?> BuscarPorId(Guid id, CancellationToken ct = default)
         => await _db.Produtos.FirstOrDefaultAsync(p => p.Id == id, ct);
