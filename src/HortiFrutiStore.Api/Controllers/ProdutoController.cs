@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HortiFrutiStore.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ProdutoController : ControllerBase
     {
@@ -23,14 +23,14 @@ namespace HortiFrutiStore.Api.Controllers
             return Ok(dto);
         }
 
-        [HttpGet("/BuscarTodos")]
+        [HttpGet("buscartodos")]
         public async Task<IActionResult> BuscarTodos(CancellationToken ct)
         {
             var retorno = await _produtoServices.BuscarTodos(ct);
             return Ok(retorno);
         }
 
-        [HttpPost("/Criar")]
+        [HttpPost("Criar")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Criar([FromBody] ProdutoDto dto, CancellationToken ct)
         {
@@ -38,21 +38,30 @@ namespace HortiFrutiStore.Api.Controllers
             return Created();
         }
 
-        [HttpPatch("/nome/{Id:guid}")]
+        [HttpPatch("nome/{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
 
-        public async Task<IActionResult> AlterarNomeProduto([FromRoute]Guid id, string novoNome, CancellationToken ct)
+        public async Task<IActionResult> AlterarNome([FromRoute]Guid id, string novoNome, CancellationToken ct)
         {
             await _produtoServices.AlterarNome(id, novoNome, ct);
 
             return NoContent();
         }
-        [HttpPatch("/preco/{Id:guid}")]
 
-        public async Task<IActionResult> AlterarPrecoProduto([FromRoute]Guid id, decimal novoPreco, CancellationToken ct)
+        [HttpPatch("preco/{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> AlterarPreco([FromRoute]Guid id, decimal novoPreco, CancellationToken ct)
         {
             await _produtoServices.AlterarPreco(id, novoPreco, ct);
 
             return NoContent();
+        }
+
+        [HttpDelete("excluir/{id:guid}")]
+        public async Task<IActionResult> Remover(Guid id, CancellationToken ct)
+        {
+            await _produtoServices.Remover(id, ct);
+            return Ok();
         }
     }
 }

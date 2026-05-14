@@ -21,6 +21,11 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AdicionarInfrastrutura();
 
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+});
+
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
 
