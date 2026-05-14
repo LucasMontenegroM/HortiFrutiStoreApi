@@ -1,16 +1,12 @@
 using HortiFrutiStore.Api.Exceptions;
 using HortiFrutiStore.Application.Services;
 using HortiFrutiStore.Application.Services.Interfaces;
-using HortiFrutiStore.Domain.Interfaces;
 using HortiFrutiStore.Infrastructure.Contexts;
-using HortiFrutiStore.Infrastructure.Mappings;
 using HortiFrutiStore.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(options =>
@@ -23,7 +19,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddTransient<IProdutoService, ProdutoService>();
 builder.Services.AdicionarInfrastrutura();
 
 builder.Services.AddExceptionHandler<ExceptionHandler>();
@@ -35,8 +30,6 @@ builder.Services.AddDbContext<StoreContext>(options =>
 });
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
 
 if (app.Environment.IsDevelopment())
 {

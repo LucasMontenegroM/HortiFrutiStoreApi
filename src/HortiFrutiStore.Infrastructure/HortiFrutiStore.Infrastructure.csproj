@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HortiFrutiStore.Application\HortiFrutiStore.Application.csproj" />
     <ProjectReference Include="..\HortiFrutiStore.Domain\HortiFrutiStore.Domain.csproj" />
   </ItemGroup>
 

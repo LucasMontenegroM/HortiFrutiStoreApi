@@ -1,5 +1,4 @@
 ﻿using HortiFrutiStore.Application.DTOs;
-using HortiFrutiStore.Domain.Entities;
 
 namespace HortiFrutiStore.Application.Services.Interfaces;
 

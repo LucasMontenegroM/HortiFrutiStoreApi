@@ -23,6 +23,7 @@ internal sealed class ExceptionHandler : IExceptionHandler
         {
             NotFoundException  => StatusCodes.Status404NotFound,
             DomainException    => StatusCodes.Status400BadRequest,
+            AppException       => StatusCodes.Status400BadRequest,
             _                  => StatusCodes.Status500InternalServerError
         };
 

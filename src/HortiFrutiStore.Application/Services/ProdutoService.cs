@@ -45,6 +45,9 @@ public class ProdutoService : IProdutoService
 
         var resultado = _validator.Validate(entidade);
 
+        if (!resultado.IsValid)
+            throw new AppException(resultado.Errors.Select(e => e.ErrorMessage));
+
         await _unitOfWork.CommitAsync(ct);
     }
 
@@ -80,7 +83,10 @@ public class ProdutoService : IProdutoService
     {
         var novoProdutoEntity = Produto.Criar(produto.Nome, produto.PrecoBase, produto.Desconto);
 
-        var result = _validator.Validate(novoProdutoEntity);
+        var resultado = _validator.Validate(novoProdutoEntity);
+
+        if (!resultado.IsValid)
+            throw new AppException(resultado.Errors.Select(e => e.ErrorMessage));
 
         _produtoRepository.Adicionar(novoProdutoEntity);
 
