@@ -1,10 +1,15 @@
-﻿using HortiFrutiStore.Domain.Entities;
+﻿using HortiFrutiStore.Domain.Abstracoes;
+using System.Linq.Expressions;
 
 namespace HortiFrutiStore.Domain.Interfaces
 {
-    public interface IRepository <T> where T : class
+    public interface IRepository <T> where T : Entity
     {
-        Task<T?> BuscarPorId(Guid id, CancellationToken ct = default);
-        Task<List<T>> BuscarTodos(CancellationToken ct = default);     
+        Task<List<T>> BuscarTodos(int numPagina, int numExibidos, CancellationToken ct = default);
+        Task<T?> BuscarPor(Expression<Func<T, bool>> expression, CancellationToken ct = default);
+        void Adicionar(T entity);
+        void Atualizar(T entity);
+        void Remover(T entity);
+
     }
 }

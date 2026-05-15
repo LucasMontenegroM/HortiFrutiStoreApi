@@ -11,7 +11,7 @@ namespace HortiFrutiStore.Infrastructure.Contexts
         public DbSet<Produto> Produtos { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new ProdutoConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(StoreContext).Assembly);
         }
     }
 }
