@@ -25,6 +25,11 @@ public class ProdutoService : IProdutoService
         var entidadeProduto = await _produtoRepository.BuscarPor(p => p.Id == id, ct)
             ?? throw new NotFoundException("Não foi possível encontrar o produto.");
 
+        var resultado = _validator.Validate(entidadeProduto);
+
+        if (!resultado.IsValid)
+            throw new DomainException(resultado.Errors.Select(e => e.ErrorMessage));
+
         entidadeProduto.Preco.AtualizarDesconto(novoDesconto);
 
         await _unitOfWork.CommitAsync(ct);
@@ -58,18 +63,6 @@ public class ProdutoService : IProdutoService
 
         if (!resultado.IsValid)
             throw new DomainException(resultado.Errors.Select(e => e.ErrorMessage));
-
-        await _unitOfWork.CommitAsync(ct);
-    }
-
-    public async Task AplicarDesconto(Guid id, decimal novoDesconto, CancellationToken ct)
-    {
-        var entidade = await _produtoRepository.BuscarPor(p => p.Id == id, ct)
-            ?? throw new NotFoundException("Produto não encontrado.");
-
-        entidade.Preco.AtualizarDesconto(novoDesconto);
-
-        _produtoRepository.Atualizar(entidade);
 
         await _unitOfWork.CommitAsync(ct);
     }
