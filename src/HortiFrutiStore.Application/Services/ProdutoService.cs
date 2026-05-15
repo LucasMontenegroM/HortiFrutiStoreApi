@@ -19,6 +19,17 @@ public class ProdutoService : IProdutoService
         _unitOfWork = unitOfWork;
         _validator = validator;
     }
+
+    public async Task AlterarDesconto(Guid id, decimal novoDesconto, CancellationToken ct = default)
+    {
+        var entidadeProduto = await _produtoRepository.BuscarPor(p => p.Id == id, ct)
+            ?? throw new NotFoundException("Não foi possível encontrar o produto.");
+
+        entidadeProduto.Preco.AtualizarDesconto(novoDesconto);
+
+        await _unitOfWork.CommitAsync(ct);
+    }
+
     public async Task AlterarNome(Guid id, string novoNome, CancellationToken ct)
     {
         var produtoEntity = await _produtoRepository.BuscarPor(p => p.Id == id, ct)
@@ -81,7 +92,7 @@ public class ProdutoService : IProdutoService
 
     public async Task<ProdutoDto> Criar(ProdutoDto produto, CancellationToken ct)
     {
-        var novoProdutoEntity = Produto.Criar(produto.Nome, produto.PrecoBase, produto.Desconto);
+        var novoProdutoEntity = Produto.Criar(produto.Nome, produto.PrecoFinal, produto.Desconto);
 
         var resultado = _validator.Validate(novoProdutoEntity);
 

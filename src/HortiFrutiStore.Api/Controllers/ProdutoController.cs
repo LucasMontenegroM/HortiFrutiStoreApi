@@ -57,10 +57,20 @@ namespace HortiFrutiStore.Api.Controllers
             return NoContent();
         }
 
+        [HttpPatch("desconto/{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+
+        public async Task<IActionResult> AlterarDesconto([FromRoute]Guid id, decimal novoDesconto, CancellationToken ct)
+        {
+            await _produtoServices.AlterarDesconto(id, novoDesconto, ct);
+
+            return NoContent();
+        }
         [HttpDelete("excluir/{id:guid}")]
         public async Task<IActionResult> Remover(Guid id, CancellationToken ct)
         {
             await _produtoServices.Remover(id, ct);
+
             return Ok();
         }
     }

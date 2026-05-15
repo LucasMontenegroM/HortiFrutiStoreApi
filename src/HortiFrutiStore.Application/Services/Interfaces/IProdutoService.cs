@@ -10,5 +10,6 @@ public interface IProdutoService
     Task Remover(Guid id, CancellationToken ct = default);
     Task AlterarNome(Guid id, string novoNome, CancellationToken ct = default);
     Task AlterarPreco(Guid id, decimal novoPreco, CancellationToken ct = default);
+    Task AlterarDesconto(Guid id, decimal novoDesconto, CancellationToken ct = default);
     Task AplicarDesconto(Guid id, decimal novoDesconto, CancellationToken ct = default);
 }
