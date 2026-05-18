@@ -1,6 +1,5 @@
 using HortiFrutiStore.Api.Exceptions;
-using HortiFrutiStore.Application.Services;
-using HortiFrutiStore.Application.Services.Interfaces;
+using HortiFrutiStore.Application;
 using HortiFrutiStore.Infrastructure.Contexts;
 using HortiFrutiStore.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +19,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AdicionarInfrastrutura();
+builder.Services.AdicionarApplication();
 
 builder.Services.Configure<RouteOptions>(options =>
 {
