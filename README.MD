@@ -1,4 +1,4 @@
-﻿# HortiFrutiStore API
+# HortiFrutiStore API
 
 ![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat&logo=dotnet)
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-REST_API-blue?style=flat&logo=microsoft)
