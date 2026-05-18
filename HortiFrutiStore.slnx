@@ -2,6 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path="README.MD" />
   </Folder>
+  <Project Path="HortiFruitStore.Tests/HortiFruitStore.Tests.csproj" Id="062d0b60-c542-4329-b1ba-e0067b881429" />
   <Project Path="src/HortiFrutiStore.Api/HortiFrutiStore.Api.csproj" />
   <Project Path="src/HortiFrutiStore.Application/HortiFrutiStore.Application.csproj" />
   <Project Path="src/HortiFrutiStore.Domain/HortiFrutiStore.Domain.csproj" />
