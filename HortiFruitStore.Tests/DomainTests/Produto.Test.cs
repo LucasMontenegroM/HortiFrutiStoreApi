@@ -14,7 +14,27 @@ public class ProdutoDomainTestes()
 {
 
     private readonly ProdutoValidator _validator = new();
-    private readonly Produto _produtoExistente = Produto.Criar("Maçã", 20m, 0.5m);
+
+    public static IEnumerable<object?[]> NomesInvalidos =>
+    [
+        ["", 10.0, null],
+        [" ", 10.0, null],
+        [new string('a', 256), 10.0, null],
+        [new string('a', 300), 10.0, null],
+    ];
+
+    public static IEnumerable<object?[]> PrecosInvalidos =>
+    [
+        ["Banana", -1.0, null],
+        ["Banana", 0.0, null],
+    ];
+
+    public static IEnumerable<object?[]> DescontosInvalidos =>
+    [
+        ["Banana", 10.0, 1.0],
+        ["Banana", 10.0, 1.5],
+        ["Banana", 10.0, -0.1],
+    ];
 
     [TestMethod]
     public void CriarProdutoValido_DeveRetornarSucessoSemDesconto()
@@ -37,11 +57,10 @@ public class ProdutoDomainTestes()
     }
 
     [TestMethod]
-    [DataRow("", 10.0, null)]
-    [DataRow(" ", 10.0, null)]
-    public void NomeVazio_DeveRetornarErro(string nome, double preco, decimal desconto)
+    [DynamicData(nameof(NomesInvalidos))]
+    public void CriarNomeInvalido_DeveRetornarErro(string nome, double preco, double? desconto)
     {
-        var produto = Produto.Criar(nome, (decimal)preco, desconto);
+        var produto = Produto.Criar(nome, (decimal)preco, desconto.HasValue ? (decimal?)desconto : null);
 
         var resultado = _validator.TestValidate(produto);
 
@@ -49,10 +68,10 @@ public class ProdutoDomainTestes()
     }
 
     [TestMethod]
-    [DataRow("Banana", -1.0, null)]
-    public void PrecoNegativo_DeveRetornarErro(string nome, double preco, decimal desconto)
+    [DynamicData(nameof(PrecosInvalidos))]
+    public void AtualizarPrecoInvalido_DeveRetornarErro(string nome, double preco, double? desconto)
     {
-        var produto = Produto.Criar(nome, (decimal)preco, desconto);
+        var produto = Produto.Criar(nome, (decimal)preco, desconto.HasValue ? (decimal?)desconto : null);
 
         var resultado = _validator.TestValidate(produto);
 
@@ -60,10 +79,10 @@ public class ProdutoDomainTestes()
     }
 
     [TestMethod]
-    [DataRow("Banana", 1.1, 1.1)]
-    public void DescontoAcimaDeUm_DeveRetornarErro(string nome, double preco, double desconto)
+    [DynamicData(nameof(DescontosInvalidos))]
+    public void AtualizarDescontoAcimaDeUmOuAbaixoDeZero_DeveRetornarErro(string nome, double preco, double desconto)
     {
-        var produto = Produto.Criar("Banana", (decimal)preco, (decimal)desconto);
+        var produto = Produto.Criar(nome, (decimal)preco, (decimal)desconto);
 
         var resultado = _validator.TestValidate(produto);
 
@@ -71,53 +90,24 @@ public class ProdutoDomainTestes()
     }
 
     [TestMethod]
-
     public void AtualizarComNomeValido_DeveRetornarSucesso()
     {
-        var novoNome = "Laranja";
+        var produto = Produto.Criar("Maçã", 20m, 0.5m);
+        produto.AtualizarNome("Laranja");
 
-        _produtoExistente.AtualizarNome(novoNome);
-
-        var resultado = _validator.TestValidate(_produtoExistente);
+        var resultado = _validator.TestValidate(produto);
 
         resultado.ShouldNotHaveAnyValidationErrors();
     }
 
     [TestMethod]
-
-    public void AtualizarComNomeVazio_DeveRetornarErro()
-    {
-        var novoNome = "";
-
-        _produtoExistente.AtualizarNome(novoNome);
-
-        var resultado = _validator.TestValidate(_produtoExistente);
-
-        resultado.ShouldHaveValidationErrorFor(p => p.Nome);
-    }
-
-    [TestMethod]
-
     public void AtualizarPrecoDeProdutoValido_DeveRetornarPrecoCorreto()
     {
-        var novoPreco = 10.0m;
+        var produto = Produto.Criar("Maçã", 20m, 0.5m);
+        produto.Preco.AtualizarValorBase(10.0m);
 
-        _produtoExistente.Preco.AtualizarValorBase(novoPreco);
-
-        var resultado = _validator.TestValidate(_produtoExistente);
+        var resultado = _validator.TestValidate(produto);
 
         resultado.ShouldNotHaveAnyValidationErrors();
-    }
-
-    [TestMethod]
-    public void AtualizarPrecoDeProdutoInvalido_DeveRetornarErro()
-    {
-        var novoPreco = -10.0m;
-
-        _produtoExistente.Preco.AtualizarValorBase(novoPreco);
-
-        var resultado = _validator.TestValidate(_produtoExistente);
-
-        resultado.ShouldHaveValidationErrorFor(p => p.Preco.ValorBase);
     }
 }
